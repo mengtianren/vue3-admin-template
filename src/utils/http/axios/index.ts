@@ -1,25 +1,36 @@
+import { useUserStore } from '@/store/modules/user';
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
-// The axios configuration can be changed according to the project, just change the file, other files can be left unchanged
-
+import { isObject } from 'lodash-es'
 import type { AxiosResponse } from 'axios';
-import type { RequestOptions, Result } from '/#/axios';
 import type { AxiosTransform, CreateAxiosOptions } from './axiosTransform';
 import { VAxios } from './Axios';
 import { checkStatus } from './checkStatus';
-import { useGlobSetting } from '/@/hooks/setting';
-import { useMessage } from '/@/hooks/web/useMessage';
-import { RequestEnum, ResultEnum, ContentTypeEnum } from '/@/enums/httpEnum';
-import { isString } from '/@/utils/is';
-import { getToken } from '/@/utils/auth';
-import { setObjToUrlParams, deepMerge } from '/@/utils';
-import { useErrorLogStoreWithOut } from '/@/store/modules/errorLog';
-import { useI18n } from '/@/hooks/web/useI18n';
+import { useMessage } from '@/hooks/web/useMessage';
+import { RequestEnum, ResultEnum, ContentTypeEnum } from '@/enums/httpEnum';
+import { isString } from 'lodash-es';
 import { joinTimestamp, formatRequestDate } from './helper';
-import { useUserStoreWithOut } from '/@/store/modules/user';
 
-const globSetting = useGlobSetting();
-const urlPrefix = globSetting.urlPrefix;
+
 const { createMessage, createErrorModal } = useMessage();
+
+export function setObjToUrlParams(baseUrl: string, obj: any): string {
+  let parameters = '';
+  for (const key in obj) {
+    parameters += key + '=' + encodeURIComponent(obj[key]) + '&';
+  }
+  parameters = parameters.replace(/&$/, '');
+  return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters;
+}
+export function deepMerge<T = any>(src: any = {}, target: any = {}): T {
+  let key: string;
+  for (key in target) {
+    src[key] = isObject(src[key]) ? deepMerge(src[key], target[key]) : (src[key] = target[key]);
+  }
+  return src;
+}
+
+
+
 
 /**
  * @description: 数据处理，方便区分多种处理方式
@@ -29,7 +40,6 @@ const transform: AxiosTransform = {
    * @description: 处理请求数据。如果数据不是预期格式，可直接抛出错误
    */
   transformRequestHook: (res: AxiosResponse<Result>, options: RequestOptions) => {
-    const { t } = useI18n();
     const { isTransformResponse, isReturnNativeResponse } = options;
     // 是否返回原生响应头 比如：需要获取响应头时使用该属性
     if (isReturnNativeResponse) {
@@ -45,7 +55,7 @@ const transform: AxiosTransform = {
     const { data } = res;
     if (!data) {
       // return '[HTTP] Request has no return value';
-      throw new Error(t('sys.api.apiRequestFailed'));
+      throw new Error('apiRequestFailed');
     }
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
     const { code, result, message } = data;
@@ -61,10 +71,9 @@ const transform: AxiosTransform = {
     let timeoutMsg = '';
     switch (code) {
       case ResultEnum.TIMEOUT:
-        timeoutMsg = t('sys.api.timeoutMessage');
-        const userStore = useUserStoreWithOut();
-        userStore.setToken(undefined);
-        userStore.logout(true);
+        timeoutMsg = '超时';
+        const userStore = useUserStore();
+        userStore.logout();
         break;
       default:
         if (message) {
@@ -75,21 +84,19 @@ const transform: AxiosTransform = {
     // errorMessageMode=‘modal’的时候会显示modal错误弹窗，而不是消息提示，用于一些比较重要的错误
     // errorMessageMode='none' 一般是调用时明确表示不希望自动弹出错误提示
     if (options.errorMessageMode === 'modal') {
-      createErrorModal({ title: t('sys.api.errorTip'), content: timeoutMsg });
+      createErrorModal({ title: '错误', content: timeoutMsg });
     } else if (options.errorMessageMode === 'message') {
       createMessage.error(timeoutMsg);
     }
 
-    throw new Error(timeoutMsg || t('sys.api.apiRequestFailed'));
+    throw new Error(timeoutMsg || '未知错误');
   },
 
   // 请求之前处理config
   beforeRequestHook: (config, options) => {
-    const { apiUrl, joinPrefix, joinParamsToUrl, formatDate, joinTime = true, urlPrefix } = options;
+    const { apiUrl, joinParamsToUrl, formatDate, joinTime = true, } = options;
 
-    if (joinPrefix) {
-      config.url = `${urlPrefix}${config.url}`;
-    }
+
 
     if (apiUrl && isString(apiUrl)) {
       config.url = `${apiUrl}${config.url}`;
@@ -137,7 +144,7 @@ const transform: AxiosTransform = {
    */
   requestInterceptors: (config, options) => {
     // 请求之前处理config
-    const token = getToken();
+    const token = '';
     if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
       // jwt token
       (config as Recordable).headers.Authorization = options.authenticationScheme
@@ -158,9 +165,6 @@ const transform: AxiosTransform = {
    * @description: 响应错误处理
    */
   responseInterceptorsCatch: (error: any) => {
-    const { t } = useI18n();
-    const errorLogStore = useErrorLogStoreWithOut();
-    errorLogStore.addAjaxErrorInfo(error);
     const { response, code, message, config } = error || {};
     const errorMessageMode = config?.requestOptions?.errorMessageMode || 'none';
     const msg: string = response?.data?.error?.message ?? '';
@@ -169,15 +173,15 @@ const transform: AxiosTransform = {
 
     try {
       if (code === 'ECONNABORTED' && message.indexOf('timeout') !== -1) {
-        errMessage = t('sys.api.apiTimeoutMessage');
+        errMessage = '超时';
       }
       if (err?.includes('Network Error')) {
-        errMessage = t('sys.api.networkExceptionMsg');
+        errMessage = '系统错误';
       }
 
       if (errMessage) {
         if (errorMessageMode === 'modal') {
-          createErrorModal({ title: t('sys.api.errorTip'), content: errMessage });
+          createErrorModal({ title: 'errorTip', content: errMessage });
         } else if (errorMessageMode === 'message') {
           createMessage.error(errMessage);
         }
@@ -223,10 +227,10 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           formatDate: true,
           // 消息提示类型
           errorMessageMode: 'message',
-          // 接口地址
-          apiUrl: globSetting.apiUrl,
-          // 接口拼接地址
-          urlPrefix: urlPrefix,
+          // // 接口地址
+          // apiUrl: globSetting.apiUrl,
+          // // 接口拼接地址
+          // urlPrefix: urlPrefix,
           //  是否加入时间戳
           joinTime: true,
           // 忽略重复请求
@@ -239,7 +243,12 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
     ),
   );
 }
-export const defHttp = createAxios();
+export const defHttp = createAxios({
+  requestOptions: {
+    apiUrl: 'xxx',
+    urlPrefix: 'xxx',
+  },
+});
 
 // other api url
 // export const otherHttp = createAxios({
