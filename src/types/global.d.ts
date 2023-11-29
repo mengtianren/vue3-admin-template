@@ -5,7 +5,7 @@ import type {
   ComponentPublicInstance,
   FunctionalComponent,
   PropType as VuePropType,
-} from "vue";
+} from 'vue';
 
 declare global {
   const __APP_INFO__: {
@@ -83,7 +83,7 @@ declare global {
   }
 }
 
-declare module "vue" {
+declare module 'vue' {
   export type JSXComponent<Props = any> =
     | { new (): ComponentPublicInstance<Props> }
     | FunctionalComponent<Props>;

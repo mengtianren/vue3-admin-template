@@ -1,7 +1,7 @@
 <template>
   <a-dropdown>
     <div style="cursor: pointer">
-      <a-avatar style="background-color: #f56a00">userInfo.userName</a-avatar>
+      <a-avatar style="background-color: #f56a00">{{ userInfo.userName }}</a-avatar>
       <span class="user-name">{{ userInfo.userName || '未知' }}</span>
     </div>
 

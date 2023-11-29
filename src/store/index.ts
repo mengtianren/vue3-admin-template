@@ -1,6 +1,6 @@
-import { createPinia } from "pinia";
-import piniaPluginPersist from "pinia-plugin-persist";
-import { cloneDeep } from "lodash-es";
+import { createPinia } from 'pinia';
+import piniaPluginPersist from 'pinia-plugin-persist';
+import { cloneDeep } from 'lodash-es';
 
 const store = createPinia();
 
