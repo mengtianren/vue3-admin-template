@@ -4,7 +4,6 @@
     <a-menu-item v-for="child in items.children" :key="child.name">
       {{ child.title }}1212121
     </a-menu-item>
-
   </a-sub-menu>
 </template>
 <script setup lang="ts" name="MenuChildren">
@@ -12,12 +11,8 @@ defineProps({
   items: {
     type: Object,
     default: () => ({
-      title: '默认'
-    })
-  }
-
-})
-
-
-
+      title: "默认",
+    }),
+  },
+});
 </script>

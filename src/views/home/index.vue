@@ -1,7 +1,8 @@
 <template>
   <div>
     home
-    <br /> home
+    <br />
+    home
     <br />
     <br />
     <br />

@@ -5,7 +5,7 @@ import type {
   ComponentPublicInstance,
   FunctionalComponent,
   PropType as VuePropType,
-} from 'vue';
+} from "vue";
 
 declare global {
   const __APP_INFO__: {
@@ -59,7 +59,7 @@ declare global {
   declare interface ViteEnv {
     VITE_PORT: number;
     VITE_GLOB_APP_TITLE: string;
-    VITE_GLOB_API_URL: string
+    VITE_GLOB_API_URL: string;
   }
 
   declare function parseInt(s: string | number, radix?: number): number;
@@ -83,8 +83,8 @@ declare global {
   }
 }
 
-declare module 'vue' {
+declare module "vue" {
   export type JSXComponent<Props = any> =
-    | { new(): ComponentPublicInstance<Props> }
+    | { new (): ComponentPublicInstance<Props> }
     | FunctionalComponent<Props>;
 }

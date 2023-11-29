@@ -4,5 +4,5 @@
   </a-layout-footer>
 </template>
 <script setup lang="ts">
-const { VITE_GLOB_APP_TITLE = '' } = import.meta.env;
+const { VITE_GLOB_APP_TITLE = "" } = import.meta.env;
 </script>

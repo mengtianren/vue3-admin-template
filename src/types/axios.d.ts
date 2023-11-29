@@ -1,4 +1,4 @@
-type ErrorMessageMode = 'none' | 'modal' | 'message' | undefined;
+type ErrorMessageMode = "none" | "modal" | "message" | undefined;
 
 interface RequestOptions {
   // Splicing request parameters to url
@@ -27,7 +27,7 @@ interface RequestOptions {
 
 interface Result<T = any> {
   code: number;
-  type: 'success' | 'error' | 'warning';
+  type: "success" | "error" | "warning";
   message: string;
   result: T;
 }

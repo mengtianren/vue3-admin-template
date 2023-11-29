@@ -1,10 +1,6 @@
+export {};
 
-
-export { };
-
-declare module 'vue-router' {
-
-
+declare module "vue-router" {
   // interface RouteRecordRawTg extends RouteRecordRaw {
   //   icon?: tring,
   //   name: string,
@@ -13,13 +9,12 @@ declare module 'vue-router' {
   //   children?: RouteMeta[]
   // }
   type Tg = {
-    icon?: tring,
-    name: string,
-    title: string,
-    menu?: boolean,
+    icon?: tring;
+    name: string;
+    title: string;
+    menu?: boolean;
     // children?: RouteRecordRawTg[]
-
-  }
-  type RouteRecordRawTg = RouteRecordRaw & Tg
+  };
+  type RouteRecordRawTg = RouteRecordRaw & Tg;
   // console.log(RouteRecordRawTg)
 }

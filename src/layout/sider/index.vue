@@ -1,6 +1,15 @@
 <template>
-  <a-layout-sider :style="{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }">
-    <div class="logo"> {{ VITE_GLOB_APP_TITLE }}</div>
+  <a-layout-sider
+    :style="{
+      overflow: 'auto',
+      height: '100vh',
+      position: 'fixed',
+      left: 0,
+      top: 0,
+      bottom: 0,
+    }"
+  >
+    <div class="logo">{{ VITE_GLOB_APP_TITLE }}</div>
     <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
       <a-menu-item key="1">
         <user-outlined />
@@ -38,31 +47,28 @@
   </a-layout-sider>
 </template>
 <script setup lang="ts">
-import {
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  AppstoreOutlined,
-  TeamOutlined,
-  ShopOutlined,
-} from '@ant-design/icons-vue';
-import { ref } from 'vue'
-const { VITE_GLOB_APP_TITLE = '' } = import.meta.env;
+  import {
+    UserOutlined,
+    VideoCameraOutlined,
+    UploadOutlined,
+    BarChartOutlined,
+    CloudOutlined,
+    AppstoreOutlined,
+    TeamOutlined,
+    ShopOutlined,
+  } from '@ant-design/icons-vue';
+  import { ref } from 'vue';
+  const { VITE_GLOB_APP_TITLE = '' } = import.meta.env;
 
-
-
-const selectedKeys = ref<string[]>(['4'])
+  const selectedKeys = ref<string[]>(['4']);
 </script>
 
 <style lang="less" scoped>
-.logo {
-  width: 100%;
-  height: 36px;
-  padding: 24px 0;
-  text-align: center;
-  line-height: 24px;
-
-}
+  .logo {
+    padding: 24px 0;
+    width: 100%;
+    height: 36px;
+    text-align: center;
+    line-height: 24px;
+  }
 </style>
