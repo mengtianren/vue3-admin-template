@@ -7,12 +7,12 @@
   </a-sub-menu>
 </template>
 <script setup lang="ts" name="MenuChildren">
-defineProps({
-  items: {
-    type: Object,
-    default: () => ({
-      title: "默认",
-    }),
-  },
-});
+  defineProps({
+    items: {
+      type: Object,
+      default: () => ({
+        title: '默认',
+      }),
+    },
+  });
 </script>

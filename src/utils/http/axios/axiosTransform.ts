@@ -1,7 +1,7 @@
 /**
  * Data processing class, can be configured according to the project
  */
-import type { AxiosRequestConfig, AxiosResponse } from "axios";
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export interface CreateAxiosOptions extends AxiosRequestConfig {
   authenticationScheme?: string;
@@ -14,18 +14,12 @@ export abstract class AxiosTransform {
    * @description: Process configuration before request
    * @description: Process configuration before request
    */
-  beforeRequestHook?: (
-    config: AxiosRequestConfig,
-    options: RequestOptions
-  ) => AxiosRequestConfig;
+  beforeRequestHook?: (config: AxiosRequestConfig, options: RequestOptions) => AxiosRequestConfig;
 
   /**
    * @description: Request successfully processed
    */
-  transformRequestHook?: (
-    res: AxiosResponse<Result>,
-    options: RequestOptions
-  ) => any;
+  transformRequestHook?: (res: AxiosResponse<Result>, options: RequestOptions) => any;
 
   /**
    * @description: 请求失败处理
@@ -37,7 +31,7 @@ export abstract class AxiosTransform {
    */
   requestInterceptors?: (
     config: AxiosRequestConfig,
-    options: CreateAxiosOptions
+    options: CreateAxiosOptions,
   ) => AxiosRequestConfig;
 
   /**
